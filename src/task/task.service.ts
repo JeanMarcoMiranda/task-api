@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Task, TaskStatus } from './task.model';
 import { randomUUID } from 'crypto';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -21,5 +21,14 @@ export class TaskService {
 
     this.tasks.push(task);
     return task;
+  }
+
+  getTaskById(id: string): Task {
+    const found = this.tasks.find((task) => task.id === id);
+
+    if (!found) {
+      throw new NotFoundException(`Tarea con ID "${id}" no encontrada.`);
+    }
+    return found;
   }
 }

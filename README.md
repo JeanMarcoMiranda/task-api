@@ -1,98 +1,354 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# task-api 📋
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Una API REST de gestión de tareas construida con **NestJS** como proyecto de aprendizaje de los conceptos fundamentales del framework. La API permite crear, consultar, actualizar el estado y eliminar tareas, con datos almacenados en memoria (sin base de datos).
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## Propósito del proyecto
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Este proyecto fue creado con el objetivo de aprender y practicar los conceptos básicos del desarrollo de APIs con **NestJS**, incluyendo:
 
-## Project setup
+- Creación y organización de **Módulos**, **Controladores** y **Servicios**
+- Uso de **Decoradores** de NestJS para definir rutas HTTP
+- Implementación de **DTOs** (Data Transfer Objects) con validación
+- Manejo de **excepciones HTTP** (`NotFoundException`)
+- Aplicación de **Pipes de validación globales**
+- Tipado fuerte con **TypeScript** (interfaces y enums)
+- Principio de **inyección de dependencias**
 
-```bash
-$ pnpm install
+---
+
+## Stack tecnológico
+
+| Tecnología                                                          | Versión | Rol                             |
+| ------------------------------------------------------------------- | ------- | ------------------------------- |
+| [NestJS](https://nestjs.com/)                                       | ^11.0.1 | Framework principal del backend |
+| [TypeScript](https://www.typescriptlang.org/)                       | ^5.7.3  | Lenguaje de programación        |
+| [class-validator](https://github.com/typestack/class-validator)     | ^0.15.1 | Validación de DTOs              |
+| [class-transformer](https://github.com/typestack/class-transformer) | ^0.5.1  | Transformación de objetos       |
+| [uuid](https://github.com/uuidjs/uuid)                              | ^13.0.0 | Generación de IDs únicos        |
+| [pnpm](https://pnpm.io/)                                            | -       | Gestor de paquetes              |
+| [Jest](https://jestjs.io/)                                          | ^30.0.0 | Framework de testing            |
+
+---
+
+## Estructura del proyecto
+
+```
+task-api/
+├── src/
+│   ├── app.module.ts          # Módulo raíz de la aplicación
+│   ├── app.controller.ts      # Controlador raíz
+│   ├── app.service.ts         # Servicio raíz
+│   ├── main.ts                # Punto de entrada (bootstrap)
+│   └── task/                  # Módulo de tareas (feature module)
+│       ├── dto/
+│       │   └── create-task.dto.ts   # DTO para crear una tarea
+│       ├── task.controller.ts       # Controlador de tareas (rutas HTTP)
+│       ├── task.controller.spec.ts  # Tests del controlador
+│       ├── task.model.ts            # Modelo (interfaz + enum de estado)
+│       ├── task.module.ts           # Módulo de tareas
+│       ├── task.service.ts          # Lógica de negocio
+│       └── task.service.spec.ts     # Tests del servicio
+├── test/
+│   └── app.e2e-spec.ts        # Tests end-to-end
+├── nest-cli.json
+├── package.json
+├── tsconfig.json
+└── .prettierrc
 ```
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ pnpm run start
+## Conceptos aprendidos paso a paso
 
-# watch mode
-$ pnpm run start:dev
+### 1. Módulos (`@Module`)
 
-# production mode
-$ pnpm run start:prod
+En NestJS, la aplicación se organiza en **módulos**. El módulo raíz es `AppModule` y cada feature (funcionalidad) tiene su propio módulo.
+
+```typescript
+// src/app.module.ts
+@Module({
+  imports: [TaskModule], // Se importan los módulos de feature
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
 ```
 
-## Run tests
-
-```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+```typescript
+// src/task/task.module.ts
+@Module({
+  controllers: [TaskController],
+  providers: [TaskService],
+})
+export class TaskModule {}
 ```
 
-## Deployment
+> Los **módulos** agrupan lógica relacionada. `TaskModule` encapsula todo lo relacionado con las tareas: su controlador y su servicio.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+---
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 2. El punto de entrada (`main.ts`)
 
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+El archivo `main.ts` es el **bootstrap** de la aplicación. Aquí se crea la instancia de NestJS y se configuran los **pipes globales**.
+
+```typescript
+// src/main.ts
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe()); // Activa validación global
+  await app.listen(process.env.PORT ?? 3000);
+}
+bootstrap();
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+> `ValidationPipe` es un pipe global que intercepta todas las peticiones entrantes y valida los datos del cuerpo (`@Body`) según las reglas definidas en los DTOs. Sin esto, los decoradores de `class-validator` no tendrían efecto.
 
-## Resources
+---
 
-Check out a few resources that may come in handy when working with NestJS:
+### 3. El Modelo de datos (`task.model.ts`)
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+El modelo define la **estructura** de una tarea usando una **interfaz** de TypeScript y los **estados** posibles usando un **enum**.
 
-## Support
+```typescript
+// src/task/task.model.ts
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  status: TaskStatus;
+}
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+export enum TaskStatus {
+  OPEN = 'OPEN',
+  IN_PROGRESS = 'IN_PROGRESS',
+  DONE = 'DONE',
+}
+```
 
-## Stay in touch
+> La **interfaz** `Task` garantiza que cualquier objeto de tarea en el código siempre tenga `id`, `title`, `description` y `status`. El **enum** `TaskStatus` evita usar strings "mágicos" como `'OPEN'` directamente y centraliza los valores válidos.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+### 4. DTOs y Validación (`create-task.dto.ts`)
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Un **DTO** (Data Transfer Object) es un objeto que define la forma de los datos que se esperan recibir en una petición. Se usa `class-validator` para agregar reglas de validación con decoradores.
+
+```typescript
+// src/task/dto/create-task.dto.ts
+import { IsNotEmpty } from 'class-validator';
+
+export class CreateTaskDto {
+  @IsNotEmpty()
+  title: string;
+
+  @IsNotEmpty()
+  description: string;
+}
+```
+
+> Si una petición llega con `title` o `description` vacíos, NestJS automáticamente rechaza la petición y devuelve un error `400 Bad Request` gracias a `ValidationPipe` + `@IsNotEmpty()`. Sin el DTO, habría que validar manualmente en el controlador o servicio.
+
+---
+
+### 5. El Servicio (`task.service.ts`)
+
+El **servicio** contiene toda la **lógica de negocio**. En este proyecto, las tareas se almacenan en un arreglo en memoria (sin base de datos).
+
+```typescript
+// src/task/task.service.ts
+@Injectable()
+export class TaskService {
+  private tasks: Task[] = []; // "Base de datos" en memoria
+
+  getAllTasks(): Task[] {
+    return this.tasks;
+  }
+
+  createTask(createTaskDto: CreateTaskDto): Task {
+    const task: Task = {
+      id: randomUUID(), // Se genera un ID único automáticamente
+      title: createTaskDto.title,
+      description: createTaskDto.description,
+      status: TaskStatus.OPEN, // Toda tarea nueva comienza en OPEN
+    };
+    this.tasks.push(task);
+    return task;
+  }
+
+  getTaskById(id: string): Task {
+    const found = this.tasks.find((task) => task.id === id);
+    if (!found) {
+      throw new NotFoundException(`Tarea con ID "${id}" no encontrada.`);
+    }
+    return found;
+  }
+
+  deleteTask(id: string): void {
+    this.getTaskById(id); // Primero verifica que existe
+    this.tasks = this.tasks.filter((task) => task.id !== id);
+  }
+
+  updateTaskStatus(id: string, status: TaskStatus): Task {
+    const task = this.getTaskById(id);
+    task.status = status;
+    return task;
+  }
+}
+```
+
+> El decorador `@Injectable()` marca la clase para que NestJS pueda **inyectarla** como dependencia en otros lugares (como el controlador). `NotFoundException` es una excepción HTTP de NestJS que automáticamente devuelve un `404 Not Found` al cliente.
+
+---
+
+### 6. El Controlador (`task.controller.ts`)
+
+El **controlador** maneja las **peticiones HTTP** entrantes y delega el trabajo al servicio. Nunca contiene lógica de negocio.
+
+```typescript
+// src/task/task.controller.ts
+@Controller('tasks') // Prefijo de ruta: /tasks
+export class TaskController {
+  constructor(private readonly taskService: TaskService) {} // Inyección de dependencias
+
+  @Get()
+  getAllTasks(): Task[] {
+    return this.taskService.getAllTasks();
+  }
+
+  @Post()
+  createTask(@Body() createTaskDto: CreateTaskDto): Task {
+    return this.taskService.createTask(createTaskDto);
+  }
+
+  @Delete('/:id')
+  deleteTask(@Param('id') id: string): void {
+    this.taskService.deleteTask(id);
+  }
+
+  @Patch('/:id/status')
+  updateTaskStatus(
+    @Param('id') id: string,
+    @Body('status') status: TaskStatus,
+  ) {
+    return this.taskService.updateTaskStatus(id, status);
+  }
+}
+```
+
+> La **inyección de dependencias** ocurre en el constructor: NestJS crea automáticamente una instancia de `TaskService` y la proporciona al controlador. `@Body()` extrae el cuerpo de la petición, `@Param('id')` extrae el parámetro de la URL, y `@Body('status')` extrae solo el campo `status` del cuerpo.
+
+---
+
+## Endpoints de la API
+
+| Método   | Endpoint            | Descripción                      | Cuerpo (Body)                              |
+| -------- | ------------------- | -------------------------------- | ------------------------------------------ |
+| `GET`    | `/tasks`            | Obtiene todas las tareas         | -                                          |
+| `POST`   | `/tasks`            | Crea una nueva tarea             | `{ "title": "...", "description": "..." }` |
+| `DELETE` | `/tasks/:id`        | Elimina una tarea por ID         | -                                          |
+| `PATCH`  | `/tasks/:id/status` | Actualiza el estado de una tarea | `{ "status": "IN_PROGRESS" }`              |
+
+### Estados válidos para una tarea
+
+| Estado        | Descripción                              |
+| ------------- | ---------------------------------------- |
+| `OPEN`        | Estado inicial. La tarea está pendiente. |
+| `IN_PROGRESS` | La tarea está en progreso.               |
+| `DONE`        | La tarea ha sido completada.             |
+
+---
+
+## Cómo ejecutar el proyecto
+
+### 1. Instalar dependencias
+
+```bash
+pnpm install
+```
+
+### 2. Ejecutar en modo desarrollo (con hot-reload)
+
+```bash
+pnpm run start:dev
+```
+
+La API estará disponible en: `http://localhost:3000`
+
+### 3. Otros modos de ejecución
+
+```bash
+# Modo normal
+pnpm run start
+
+# Modo producción (requiere build previo)
+pnpm run build
+pnpm run start:prod
+```
+
+---
+
+## Pruebas
+
+```bash
+# Ejecutar tests unitarios
+pnpm run test
+
+# Ejecutar tests en modo watch (re-ejecuta al detectar cambios)
+pnpm run test:watch
+
+# Ejecutar tests con reporte de cobertura
+pnpm run test:cov
+
+# Ejecutar tests end-to-end
+pnpm run test:e2e
+```
+
+---
+
+## Ejemplos de uso con `curl`
+
+**Crear una tarea:**
+
+```bash
+curl -X POST http://localhost:3000/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Aprender NestJS", "description": "Completar el tutorial de NestJS"}'
+```
+
+**Obtener todas las tareas:**
+
+```bash
+curl http://localhost:3000/tasks
+```
+
+**Actualizar el estado de una tarea:**
+
+```bash
+curl -X PATCH http://localhost:3000/tasks/<ID>/status \
+  -H "Content-Type: application/json" \
+  -d '{"status": "IN_PROGRESS"}'
+```
+
+**Eliminar una tarea:**
+
+```bash
+curl -X DELETE http://localhost:3000/tasks/<ID>
+```
+
+---
+
+## Notas importantes
+
+- **Los datos no persisten**: Al reiniciar el servidor, todas las tareas se pierden porque se almacenan en memoria (arreglo en `TaskService`). Un siguiente paso natural sería integrar una base de datos como PostgreSQL con TypeORM o Prisma.
+- **Sin autenticación**: La API es completamente pública. Un siguiente paso sería agregar autenticación con JWT usando `@nestjs/passport`.
+
+---
+
+## Recursos de aprendizaje utilizados
+
+- [Documentación oficial de NestJS](https://docs.nestjs.com)
+- [class-validator](https://github.com/typestack/class-validator) — validación de DTOs
+- [NestJS Pipes](https://docs.nestjs.com/pipes) — transformación y validación de datos
+- [NestJS Exception Filters](https://docs.nestjs.com/exception-filters) — manejo de errores HTTP
